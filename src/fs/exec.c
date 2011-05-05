@@ -17,6 +17,7 @@
  *  along with Nupkux.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <kernel/ktextio.h>
 #include <lib/string.h>
 #include <kernel/syscall.h>
 #include <elf.h>
@@ -117,12 +118,19 @@ int do_exec(vnode *node, const char **argv, const char **envp)
 int sys_execve(const char *file, const char **argv, const char **envp)
 {
 	//TODO: permission check; freeing old core image & stack
-	if (!access_ok(VERIFY_READ, file, VERIFY_STRLEN)) return -EFAULT;
+	if (!access_ok(VERIFY_READ, file, VERIFY_STRLEN)) {
+		printf("EXECVE ERR -EFAULT\n");
+		return -EFAULT;
+	}
 	int status;
 	vnode *node = namei(file, &status);
 
-	if (!node) return status;
+	if (!node) {
+		printf("EXECVE ERR -NONODE %i\n", status);
+		return status;
+	}
 	status = do_exec(node, argv, envp);
 	iput(node);
+	printf("EXECVE SCC -OK %i\n", status);
 	return status;
 }

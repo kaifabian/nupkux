@@ -21,6 +21,7 @@
 #include <lib/memory.h>
 #include <signal.h>
 #include <errno.h>
+#include <kernel/ktextio.h>
 
 static void *sys_call_table[NR_SYSCALLS];
 
@@ -31,6 +32,9 @@ int sys_mknod(const char *name, int mode, int addr)
 
 void SysCallHandler(registers *regs)
 {
+	if (regs->eax != 3 && regs->eax != 4)
+		printf("EAX=%p;EDI=%p;ESI=%p;EDX=%p;ECX=%p;EBX=%p\n",
+	regs->eax, regs->edi, regs->esi, regs->edx, regs->ecx, regs->ebx);
 	if (regs->eax < 0 || regs->eax >= NR_SYSCALLS) {
 		regs->eax = -ENOSYS;
 		sys_kill(current_task->pid, SIGSYS);

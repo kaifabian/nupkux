@@ -228,7 +228,7 @@ static int nish_exec(int argc, char *argv[])
 		parent_pid = sys_getppid();
 #ifdef NISH_EXEC_DEBUG_COMMENTS
 		printf("CHILDF> Fork PID: %i, parent PID: %i\n", fork_pid, parent_pid);
-		printf("CHILDF> Fork calling execve...\n");
+		printf("CHILDF> Fork calling execve (%s)...\n", argv[1]);
 #endif
 		int process_exit_code = sys_execve(argv[1], (const char **) argv, 0);
 		// any point below here should never be reached, 'cause any process in sys_execve should call sys_exit(...);.
@@ -236,6 +236,7 @@ static int nish_exec(int argc, char *argv[])
 		// correctly if sys_execve fails due to permission restrictions, etc.
 #ifdef NISH_EXEC_DEBUG_COMMENTS
 		printf("CHILDF> Returned from execve with exit code %i...\n", process_exit_code);
+		printf("CHILDF> This should not have happened...\n");
 #endif
 		sys_exit(process_exit_code);
 	} else {

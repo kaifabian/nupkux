@@ -21,6 +21,8 @@
 
 int main(int argc, char *argv[], char *envp[])
 {
+	while(1);
+	exit(0xABCDFEFF);
 	printf("A\n");
 	return 0;
 }
